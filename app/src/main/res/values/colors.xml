@@ -1,4 +1,5 @@
 <resources>
+<color name="ic_launcher_background">#ffffff</color>
     <!-- Default Light Theme -->
     <color name="colorPrimary">#ff6750a4</color>
     <color name="colorOnPrimary">#ffffffff</color>
