@@ -1,0 +1,22 @@
+<resources>
+    <!-- Default Light Theme -->
+    <color name="colorPrimary">#ff6750a4</color>
+    <color name="colorOnPrimary">#ffffffff</color>
+    <color name="colorPrimaryContainer">#ffeaddff</color>
+    <color name="colorOnPrimaryContainer">#ff21005d</color>
+    <color name="colorPrimaryInverse">#ffd0bcff</color>
+    <color name="colorSecondary">#ff625b71</color>
+    <color name="colorOnSecondary">#ffffffff</color>
+    <color name="colorSecondaryContainer">#ffe8def8</color>
+    <color name="colorOnSecondaryContainer">#ff1d192b</color>
+    <color name="colorTertiary">#ff7d5260</color>
+    <color name="colorOnTertiary">#ffffffff</color>
+    <color name="colorTertiaryContainer">#ffffd8e4</color>
+    <color name="colorOnTertiaryContainer">#ff31111d</color>
+    <color name="colorSurface">#fffffbfe</color>
+    <color name="colorOnSurface">#ff1c1b1f</color>
+    <color name="colorSurfaceVariant">#ffe7e0ec</color>
+    <color name="colorOnSurfaceVariant">#ff49454f</color>
+    <color name="colorSurfaceInverse">#ff313033</color>
+    <color name="colorOnSurfaceInverse">#fff4eff4</color>
+</resources>

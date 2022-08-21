@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="app_name">Network Traffic</string>
+    <string name="error_title">An unexpected error occurred.\nSorry for the inconvenience.</string>
+    <string name="kBps">KB/s</string>
+    <string name="MBps">MB/s</string>
+    <string name="kbps">Kb/s</string>
+    <string name="Mbps">Mb/s</string>
+    <string name="plus99">99+</string>
+    <string name="dash">-</string>
+
+    <string-array name="usage_type">
+        <item>Mobile</item>
+        <item>WiFi</item>
+    </string-array>
+
+</resources>
