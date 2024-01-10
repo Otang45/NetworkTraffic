@@ -1,35 +1,31 @@
-package otang.network.util;
+package otang.app.network.util
 
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import otang.network.database.Usage;
+import com.github.mikephil.charting.data.BarEntry
+import otang.app.network.database.Usage
+import java.util.Collections.reverse
 
-public class ChartUtils {
+object ChartUtils {
+    fun getDailyMobileEntry(list: List<Usage?>): List<BarEntry> {
+        val entries: MutableList<BarEntry> = ArrayList()
+        var xEntry = 0.0f
+        reverse(list)
+        for (usage in list) {
+            val entry = BarEntry(xEntry, usage!!.mobile.toFloat())
+            xEntry += 1f
+            entries.add(entry)
+        }
+        return entries
+    }
 
-	public static List<BarEntry> getDailyMobileEntry(List<Usage> list) {
-		List<BarEntry> entries = new ArrayList<>();
-		float xEntry = 0.0f;
-		Collections.reverse(list);
-		for (Usage usage : list) {
-			BarEntry entry = new BarEntry(xEntry, (float) usage.mobile);
-			xEntry += 1;
-			entries.add(entry);
-		}
-		return entries;
-	}
-
-	public static List<BarEntry> getDailyWifiEntry(List<Usage> list) {
-		List<BarEntry> entries = new ArrayList<>();
-		float xEntry = 0.0f;
-		Collections.reverse(list);
-		for (Usage usage : list) {
-			BarEntry entry = new BarEntry(xEntry, (float) usage.wifi);
-			xEntry += 1;
-			entries.add(entry);
-		}
-		return entries;
-	}
+    fun getDailyWifiEntry(list: List<Usage?>): List<BarEntry> {
+        val entries: MutableList<BarEntry> = ArrayList()
+        var xEntry = 0.0f
+        reverse(list)
+        for (usage in list) {
+            val entry = BarEntry(xEntry, usage!!.wifi.toFloat())
+            xEntry += 1f
+            entries.add(entry)
+        }
+        return entries
+    }
 }

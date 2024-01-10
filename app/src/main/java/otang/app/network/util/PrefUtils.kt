@@ -1,58 +1,22 @@
-package otang.network.util;
+package otang.app.network.util
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Context
+import android.content.SharedPreferences
 
-public class PrefUtils {
+class PrefUtils(context: Context) {
+    private val preferences: SharedPreferences =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    private val editor: SharedPreferences.Editor = preferences.edit()
 
-	private static final String PREFS = "otang.network_preferences";
-	private Context context;
-	private SharedPreferences preferences;
-	private SharedPreferences.Editor editor;
+    fun saveAs(tag: String?, value: Long) {
+        editor.putLong(tag, value).commit()
+    }
 
-	public PrefUtils(Context context) {
-		this.context = context;
-		this.preferences = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-		this.editor = preferences.edit();
-	}
+    fun getLong(tag: String?): Long {
+        return preferences.getLong(tag, 0)
+    }
 
-	public void saveAs(String tag, boolean value) {
-		editor.putBoolean(tag, value).commit();
-	}
-
-	public boolean getBoolean(String tag) {
-		return preferences.getBoolean(tag, false);
-	}
-
-	public void saveAs(String tag, float value) {
-		editor.putFloat(tag, value).commit();
-	}
-
-	public float getFloat(String tag) {
-		return preferences.getFloat(tag, 0);
-	}
-
-	public void saveAs(String tag, int value) {
-		editor.putInt(tag, value).commit();
-	}
-
-	public int getInteger(String tag) {
-		return preferences.getInt(tag, 0);
-	}
-
-	public void saveAs(String tag, long value) {
-		editor.putLong(tag, value).commit();
-	}
-
-	public long getLong(String tag) {
-		return preferences.getLong(tag, 0);
-	}
-
-	public void saveAs(String tag, String value) {
-		editor.putString(tag, value).commit();
-	}
-
-	public String getString(String tag) {
-		return preferences.getString(tag, "");
-	}
+    companion object {
+        private const val PREFS = "otang.network_preferences"
+    }
 }

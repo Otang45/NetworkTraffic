@@ -1,105 +1,98 @@
-package otang.network.ui.fragment;
+package otang.app.network.ui.fragment
 
-import android.os.Bundle;
-import android.view.ViewGroup;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.AdapterView;
-import androidx.fragment.app.Fragment;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import otang.network.R;
-import otang.network.database.DatabaseHelper;
-import otang.network.databinding.UsageFragmentBinding;
-import otang.network.util.ChartUtils;
-import otang.network.util.LargeValueFormatterBytes;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.AdapterView
+import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import otang.app.network.database.DatabaseHelper
+import otang.app.network.databinding.UsageFragmentBinding
+import otang.app.network.util.ChartUtils
+import otang.app.network.util.ColourUtils
+import otang.app.network.util.LargeValueFormatterBytes
+import java.util.Timer
+import java.util.TimerTask
 
-public class UsageFragment extends Fragment {
+class UsageFragment : Fragment() {
+    private lateinit var binding: UsageFragmentBinding
+    private lateinit var helper: DatabaseHelper
+    private lateinit var networkList: List<BarEntry>
+    var isChartUpdated = false
+    var isWifiSelected = false
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        parent: ViewGroup?,
+        arguments: Bundle?
+    ): View {
+        binding = UsageFragmentBinding.inflate(inflater)
+        return binding.root
+    }
 
-	private UsageFragmentBinding binding;
-	private DatabaseHelper helper;
-	private List<BarEntry> networkList;
-	boolean isChartUpdated = false;
-	boolean isWifiSelected = false;
+    override fun onViewCreated(view: View, arguments: Bundle?) {
+        super.onViewCreated(view, arguments)
+        setupSpinner()
+        helper = DatabaseHelper.getInstance(requireActivity())!!
+        Timer().scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                requireActivity().runOnUiThread {
+                    networkList = if (isWifiSelected) {
+                        ChartUtils.getDailyWifiEntry(helper.usageList)
+                    } else {
+                        ChartUtils.getDailyMobileEntry(helper.usageList)
+                    }
+                    if (!isChartUpdated) {
+                        setupLineChart(networkList)
+                        isChartUpdated = true
+                    }
+                }
+            }
+        }, 0, 5000)
+    }
 
-	public UsageFragment() {
-	}
+    private fun setupSpinner() {
+        binding.acs.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                isWifiSelected = position != 0
+                isChartUpdated = false
+            }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle arguments) {
-		binding = UsageFragmentBinding.inflate(inflater);
-		return binding.getRoot();
-	}
+            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+        }
+    }
 
-	@Override
-	public void onViewCreated(View view, Bundle arguments) {
-		super.onViewCreated(view, arguments);
-		setupSpinner();
-		helper = DatabaseHelper.getInstance(getActivity());
-		new Timer().scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				if (getActivity() != null)
-					getActivity().runOnUiThread(() -> {
-						if (isWifiSelected) {
-							networkList = ChartUtils.getDailyWifiEntry(helper.getUsageList());
-						} else {
-							networkList = ChartUtils.getDailyMobileEntry(helper.getUsageList());
-						}
-						if (!isChartUpdated) {
-							setupLineChart(networkList);
-							isChartUpdated = true;
-						}
-					});
-			}
-		}, 0, 5000);
-	}
-
-	private void setupSpinner() {
-		binding.acs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-				isWifiSelected = position != 0;
-				isChartUpdated = false;
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> adapterView) {
-			}
-		});
-	}
-
-	private void setupLineChart(List<BarEntry> entries) {
-		binding.bc.invalidate();
-		try {
-			BarDataSet barDataSet = new BarDataSet(entries, "Usage");
-			barDataSet.setColor(getActivity().getColor(R.color.colorPrimary));
-			BarData barData = new BarData(barDataSet);
-			barData.setValueFormatter(new LargeValueFormatterBytes());
-			binding.bc.getDescription().setEnabled(false);
-			XAxis xAxis = binding.bc.getXAxis();
-			xAxis.setDrawAxisLine(false);
-			xAxis.setDrawLabels(false);
-			xAxis.setDrawGridLines(false);
-			YAxis yAxis = binding.bc.getAxisLeft();
-			yAxis.setDrawLabels(false);
-			yAxis.setDrawAxisLine(false);
-			yAxis.setDrawGridLines(false);
-			yAxis.setDrawZeroLine(false);
-			binding.bc.getAxisRight().setEnabled(false);
-			binding.bc.setData(barData);
-			binding.bc.setPinchZoom(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    private fun setupLineChart(entries: List<BarEntry>) {
+        binding.bc.invalidate()
+        try {
+            val barDataSet = BarDataSet(entries, "Usage")
+            barDataSet.color = ColourUtils.getPrimary(requireActivity())
+            val barData = BarData(barDataSet)
+            barData.setValueFormatter(LargeValueFormatterBytes())
+            binding.bc.description.isEnabled = false
+            val xAxis: XAxis = binding.bc.xAxis
+            xAxis.setDrawAxisLine(false)
+            xAxis.setDrawLabels(false)
+            xAxis.setDrawGridLines(false)
+            val yAxis: YAxis = binding.bc.axisLeft
+            yAxis.setDrawLabels(false)
+            yAxis.setDrawAxisLine(false)
+            yAxis.setDrawGridLines(false)
+            yAxis.setDrawZeroLine(false)
+            binding.bc.axisRight.isEnabled = false
+            binding.bc.data = barData
+            binding.bc.setPinchZoom(true)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }

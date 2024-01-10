@@ -1,128 +1,163 @@
-package otang.network.ui.activity;
+package otang.app.network.ui.activity
 
-import android.content.Intent;
-import android.net.TrafficStats;
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TimerTask;
-import java.util.Timer;
-import otang.network.R;
-import otang.network.adapter.UsageAdapter;
-import otang.network.adapter.ViewAdapter;
-import otang.network.database.DatabaseHelper;
-import otang.network.database.Usage;
-import otang.network.databinding.ActivityMainBinding;
-import otang.network.model.Speed;
-import otang.network.preference.WindowPreference;
-import otang.network.service.TrafficService;
-import otang.network.util.AppUtils;
-import otang.network.util.TrafficUtils;
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.TrafficStats
+import android.os.Build
+import android.os.Bundle
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.internal.EdgeToEdgeUtils
+import otang.app.network.adapter.UsageAdapter
+import otang.app.network.adapter.ViewAdapter
+import otang.app.network.database.DatabaseHelper
+import otang.app.network.database.Usage
+import otang.app.network.databinding.ActivityMainBinding
+import otang.app.network.model.Speed
+import otang.app.network.service.TrafficService
+import otang.app.network.util.AppUtils
+import otang.app.network.util.TrafficUtils
+import java.util.Timer
+import java.util.TimerTask
 
-public class MainActivity extends AppCompatActivity {
+class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+    private var mLastRxBytes: Long = 0
+    private var mLastTxBytes: Long = 0
+    private var mLastTime: Long = 0
+    private lateinit var helper: DatabaseHelper
+    private lateinit var mSpeed: Speed
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        initPermission()
+        setupWindow()
+        initSpeed()
+        initViewPager()
+        initUsage()
+        initUsageList()
+    }
 
-	private ActivityMainBinding binding;
-	private long mLastRxBytes = 0;
-	private long mLastTxBytes = 0;
-	private long mLastTime = 0;
-	private DatabaseHelper helper;
-	private Speed mSpeed;
+    private fun initPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (isGranted()) {
+                startTrafficService()
+            } else {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    100
+                )
+            }
+        } else {
+            startTrafficService()
+        }
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		binding = ActivityMainBinding.inflate(getLayoutInflater());
-		setContentView(binding.getRoot());
-		startTrafficService();
-		setupWindow();
-		initSpeed();
-		initViewPager();
-		initUsage();
-		initUsageList();
-	}
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun isGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
 
-	private void initSpeed() {
-		mSpeed = new Speed(this);
-		new Timer().scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				long currentRxBytes = TrafficStats.getTotalRxBytes();
-				long currentTxBytes = TrafficStats.getTotalTxBytes();
-				long usedRxBytes = currentRxBytes - mLastRxBytes;
-				long usedTxBytes = currentTxBytes - mLastTxBytes;
-				long currentTime = System.currentTimeMillis();
-				long usedTime = currentTime - mLastTime;
-				mLastRxBytes = currentRxBytes;
-				mLastTxBytes = currentTxBytes;
-				mLastTime = currentTime;
-				mSpeed.calcSpeed(usedTime, usedRxBytes, usedTxBytes);
-				updateSpeed(mSpeed);
-			}
-		}, 0, 1000);
-	}
+    }
 
-	private void updateSpeed(Speed speed) {
-		runOnUiThread(() -> {
-			Speed.HumanSpeed down = speed.getHumanSpeed("down");
-			Speed.HumanSpeed up = speed.getHumanSpeed("up");
-			binding.tvDownload.setText(down.speedValue + " " + down.speedUnit);
-			binding.tvUpload.setText(up.speedValue + " " + up.speedUnit);
-		});
-	}
+    private fun initSpeed() {
+        mSpeed = Speed(this)
+        Timer().scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                val currentRxBytes: Long = TrafficStats.getTotalRxBytes()
+                val currentTxBytes: Long = TrafficStats.getTotalTxBytes()
+                val usedRxBytes = currentRxBytes - mLastRxBytes
+                val usedTxBytes = currentTxBytes - mLastTxBytes
+                val currentTime = System.currentTimeMillis()
+                val usedTime = currentTime - mLastTime
+                mLastRxBytes = currentRxBytes
+                mLastTxBytes = currentTxBytes
+                mLastTime = currentTime
+                mSpeed.calcSpeed(usedTime, usedRxBytes, usedTxBytes)
+                updateSpeed(mSpeed)
+            }
+        }, 0, 1000)
+    }
 
-	private void initViewPager() {
-		ViewAdapter adapter = new ViewAdapter(getSupportFragmentManager(), getLifecycle());
-		binding.vp2.setAdapter(adapter);
-		binding.wdi.setViewPager2(binding.vp2);
-	}
+    @SuppressLint("SetTextI18n")
+    private fun updateSpeed(speed: Speed) {
+        runOnUiThread {
+            val down: Speed.HumanSpeed = speed.getHumanSpeed("down")
+            val up: Speed.HumanSpeed = speed.getHumanSpeed("up")
+            binding.tvDownload.text = down.speedValue + " " + down.speedUnit
+            binding.tvUpload.text = up.speedValue + " " + up.speedUnit
+        }
+    }
 
-	private void initUsage() {
-		helper = DatabaseHelper.getInstance(this);
-		new Timer().scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				MainActivity.this.runOnUiThread(() -> {
-					Usage usage = helper.getTodayUsage(AppUtils.getDate());
-					List<Usage> usageList = helper.getUsageList();
-					binding.tvTodayMobile.setText(TrafficUtils.getMetricData(usage.mobile));
-					binding.tvTodayWifi.setText(TrafficUtils.getMetricData(usage.wifi));
-					binding.tvTotalToday.setText(TrafficUtils.getMetricData(usage.total));
-					long month = 0;
-					for (Usage u : usageList) {
-						month += u.total;
-					}
-					binding.tvTotalMonth.setText(TrafficUtils.getMetricData(month));
-				});
-			}
-		}, 0, 5000);
-	}
+    private fun initViewPager() {
+        val adapter = ViewAdapter(supportFragmentManager, lifecycle)
+        binding.vp2.adapter = adapter
+        binding.wdi.attachTo(binding.vp2)
+    }
 
-	private void initUsageList() {
-		helper = DatabaseHelper.getInstance(this);
-		new Timer().scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				MainActivity.this.runOnUiThread(() -> {
-					ArrayList<Usage> usageList = helper.getUsageList();
-					UsageAdapter adapter = new UsageAdapter(MainActivity.this, usageList);
-					binding.rv.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-					binding.rv.setAdapter(adapter);
-				});
-			}
-		}, 0, 5000);
-	}
+    private fun initUsage() {
+        helper = DatabaseHelper.getInstance(this)!!
+        Timer().scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                this@MainActivity.runOnUiThread {
+                    val usage: Usage = helper.getTodayUsage(AppUtils.date)
+                    val usageList: List<Usage> = helper.usageList
+                    binding.tvTodayMobile.text = TrafficUtils.getMetricData(usage.mobile)
+                    binding.tvTodayWifi.text = TrafficUtils.getMetricData(usage.wifi)
+                    binding.tvTotalToday.text = TrafficUtils.getMetricData(usage.total)
+                    var month: Long = 0
+                    for (u in usageList) {
+                        month += u.total
+                    }
+                    binding.tvTotalMonth.text = TrafficUtils.getMetricData(month)
+                }
+            }
+        }, 0, 5000)
+    }
 
-	private void startTrafficService() {
-		Intent i = new Intent(this, TrafficService.class);
-		i.setPackage(this.getPackageName());
-		startService(i);
-	}
+    private fun initUsageList() {
+        helper = DatabaseHelper.getInstance(this)!!
+        Timer().scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                this@MainActivity.runOnUiThread {
+                    val usageList: ArrayList<Usage> = helper.usageList
+                    val adapter = UsageAdapter(this@MainActivity, usageList)
+                    binding.rv.layoutManager = LinearLayoutManager(this@MainActivity)
+                    binding.rv.adapter = adapter
+                }
+            }
+        }, 0, 5000)
+    }
 
-	private void setupWindow() {
-		new WindowPreference(this).applyEdgeToEdgePreference(getWindow(), getColor(R.color.colorSurface));
-		AppUtils.addSystemWindowInsetToPadding(binding.getRoot(), false, true, false, true);
-	}
+    private fun startTrafficService() {
+        val i = Intent(this, TrafficService::class.java)
+        i.setPackage(this.packageName)
+        startService(i)
+    }
 
+    @SuppressLint("RestrictedApi")
+    private fun setupWindow() {
+        EdgeToEdgeUtils.applyEdgeToEdge(window, true)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 100) {
+            initPermission()
+        }
+    }
 }

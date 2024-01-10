@@ -1,15 +1,14 @@
-package otang.network.receiver;
+package otang.app.network.receiver
 
-import android.content.Intent;
-import android.content.Context;
-import android.content.BroadcastReceiver;
-import otang.network.service.TrafficService;
+import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import otang.app.network.service.TrafficService
 
-public class Receiver extends BroadcastReceiver {
-
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		context.startService(new Intent(context, TrafficService.class));
-	}
-
+class Receiver : BroadcastReceiver() {
+    @SuppressLint("UnsafeProtectedBroadcastReceiver")
+    override fun onReceive(context: Context, intent: Intent) {
+        context.startService(Intent(context, TrafficService::class.java))
+    }
 }

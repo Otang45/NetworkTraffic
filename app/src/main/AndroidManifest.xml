@@ -1,17 +1,11 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="otang.network"
-    android:versionCode="1"
-    android:versionName="1.0" >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
-    <uses-sdk
-        android:minSdkVersion="26"
-        android:targetSdkVersion="31" />
 
     <application
         android:name=".ui.Applications"
@@ -20,29 +14,20 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApplication" >
+        android:theme="@style/Theme.MyApplication">
         <activity
             android:name=".ui.activity.MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".crash.activity.DefaultErrorActivity"
-            android:process=":error_activity" />
-
-        <provider
-            android:name=".crash.provider.CrashInitProvider"
-            android:authorities="otang.network.crashinitprovider"
-            android:exported="false"
-            android:initOrder="101" />
 
         <receiver
             android:name=".receiver.Receiver"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -51,7 +36,7 @@
         <service
             android:name=".service.TrafficService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
     </application>
 
 </manifest>

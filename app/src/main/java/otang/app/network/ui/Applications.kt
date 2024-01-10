@@ -1,14 +1,13 @@
-package otang.network.ui;
+package otang.app.network.ui
 
-import android.app.Application;
-import androidx.appcompat.app.AppCompatDelegate;
+import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
+import com.google.android.material.color.DynamicColors
 
-public class Applications extends Application {
-
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-	}
-
+class Applications : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        DynamicColors.applyToActivitiesIfAvailable(this)
+    }
 }

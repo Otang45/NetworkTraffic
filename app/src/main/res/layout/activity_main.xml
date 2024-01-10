@@ -1,42 +1,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal" >
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/download_outline"
-                    android:tint="@color/colorOnSurface" />
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Download"
-                    android:textColor="@color/colorOnSurface"
+                    android:text="@string/download"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -45,41 +49,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="-"
-                android:textColor="@color/colorPrimary"
+                android:text="@string/dash"
+                android:textColor="?attr/colorPrimary"
                 android:textSize="18sp" />
         </LinearLayout>
 
         <android.view.View
             android:layout_width="2dp"
             android:layout_height="match_parent"
-            android:background="@color/colorOnSurfaceInverse" />
+            android:background="?attr/colorOnSurfaceInverse" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/upload_outline"
-                    android:tint="@color/colorOnSurface" />
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Upload"
-                    android:textColor="@color/colorOnSurface"
+                    android:text="@string/upload"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -88,8 +94,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="-"
-                android:textColor="@color/colorPrimary"
+                android:text="@string/dash"
+                android:textColor="?attr/colorPrimary"
                 android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
@@ -97,60 +103,60 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/abl"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/ctl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed" >
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:orientation="vertical" >
+                    android:orientation="vertical">
 
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/vp2"
                         android:layout_width="match_parent"
                         android:layout_height="220dp"
-                        android:layout_marginEnd="20dp"
                         android:layout_marginStart="20dp"
-                        android:layout_marginTop="10dp" />
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="20dp" />
 
                     <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
                         android:id="@+id/wdi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:dotsColor="@color/colorPrimary"
+                        app:dotsColor="?attr/colorPrimary"
                         app:dotsSize="8dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="10dp"
-                        android:orientation="horizontal" >
+                        android:layout_marginEnd="20dp"
+                        android:orientation="horizontal">
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:orientation="vertical" >
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Today Usage"
-                                android:textColor="@color/colorOnSurface"
+                                android:text="@string/today_usage"
+                                android:textColor="?attr/colorOnSurface"
                                 android:textSize="12sp" />
 
                             <LinearLayout
@@ -158,58 +164,59 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal" >
+                                android:orientation="horizontal">
 
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:gravity="center_horizontal"
-                                    android:orientation="vertical" >
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/tv_today_mobile"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="-"
-                                        android:textColor="@color/colorPrimary"
-                                        android:textSize="16sp" />
+                                        android:text="@string/dash"
+                                        android:textColor="?attr/colorPrimary"
+                                        android:textSize="16sp"
+                                        tools:ignore="TooDeepLayout" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="8dp"
-                                        android:text="Mobile"
-                                        android:textColor="@color/colorOnSurface"
+                                        android:text="@string/mobile"
+                                        android:textColor="?attr/colorOnSurface"
                                         android:textSize="12sp" />
                                 </LinearLayout>
 
                                 <android.view.View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/colorOnSurfaceInverse" />
+                                    android:background="?attr/colorOnSurfaceInverse" />
 
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:gravity="center_horizontal"
-                                    android:orientation="vertical" >
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/tv_today_wifi"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="-"
-                                        android:textColor="@color/colorPrimary"
+                                        android:text="@string/dash"
+                                        android:textColor="?attr/colorPrimary"
                                         android:textSize="16sp" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="8dp"
-                                        android:text="Wifi"
-                                        android:textColor="@color/colorOnSurface"
+                                        android:text="@string/wifi"
+                                        android:textColor="?attr/colorOnSurface"
                                         android:textSize="12sp" />
                                 </LinearLayout>
                             </LinearLayout>
@@ -218,20 +225,20 @@
                         <android.view.View
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
-                            android:background="@color/colorOnSurfaceInverse" />
+                            android:background="?attr/colorOnSurfaceInverse" />
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:orientation="vertical" >
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Total Usage"
-                                android:textColor="@color/colorOnSurface"
+                                android:text="@string/total_usage"
+                                android:textColor="?attr/colorOnSurface"
                                 android:textSize="12sp" />
 
                             <LinearLayout
@@ -239,58 +246,58 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal" >
+                                android:orientation="horizontal">
 
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:gravity="center_horizontal"
-                                    android:orientation="vertical" >
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/tv_total_today"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="-"
-                                        android:textColor="@color/colorPrimary"
+                                        android:text="@string/dash"
+                                        android:textColor="?attr/colorPrimary"
                                         android:textSize="16sp" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="8dp"
-                                        android:text="Today"
-                                        android:textColor="@color/colorOnSurface"
+                                        android:text="@string/today"
+                                        android:textColor="?attr/colorOnSurface"
                                         android:textSize="12sp" />
                                 </LinearLayout>
 
                                 <android.view.View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
-                                    android:background="@color/colorOnSurfaceInverse" />
+                                    android:background="?attr/colorOnSurfaceInverse" />
 
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:gravity="center_horizontal"
-                                    android:orientation="vertical" >
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/tv_total_month"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="-"
-                                        android:textColor="@color/colorPrimary"
+                                        android:text="@string/dash"
+                                        android:textColor="?attr/colorPrimary"
                                         android:textSize="16sp" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="8dp"
-                                        android:text="Month"
-                                        android:textColor="@color/colorOnSurface"
+                                        android:text="@string/month"
+                                        android:textColor="?attr/colorOnSurface"
                                         android:textSize="12sp" />
                                 </LinearLayout>
                             </LinearLayout>
@@ -304,9 +311,9 @@
             android:id="@+id/rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

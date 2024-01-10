@@ -1,16 +1,20 @@
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    compileSdk 31
+    namespace 'otang.app.network'
+    compileSdk 34
 
     defaultConfig {
-        applicationId "otang.network"
+        applicationId "otang.app.network"
         minSdk 26
-        targetSdk 31
+        targetSdk 34
         versionCode 1
         versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -20,12 +24,23 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        viewBinding true
     }
 }
 
 dependencies {
-	// NOTE: CodeAssist does NOT support adding dependencies here, 
-	// use the library manager instead
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.github.ibrahimsn98:speedometer:1.0.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:3.1.0'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.tbuonomo:dotsindicator:5.0'
+    implementation 'io.github.otang45:crashreport:2.0'
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

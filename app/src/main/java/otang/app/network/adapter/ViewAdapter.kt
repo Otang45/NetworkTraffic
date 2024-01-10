@@ -1,32 +1,23 @@
-package otang.network.adapter;
+package otang.app.network.adapter
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Lifecycle;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import otang.network.ui.fragment.SpeedFragment;
-import otang.network.ui.fragment.UsageFragment;
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import otang.app.network.ui.fragment.SpeedFragment
+import otang.app.network.ui.fragment.UsageFragment
 
-public class ViewAdapter extends FragmentStateAdapter {
+class ViewAdapter(manager: FragmentManager, lifecycle: Lifecycle) :
+    FragmentStateAdapter(manager, lifecycle) {
+    override fun getItemCount(): Int {
+        return 2
+    }
 
-	public ViewAdapter(FragmentManager manager, Lifecycle lifecycle) {
-		super(manager, lifecycle);
-	}
-
-	@Override
-	public int getItemCount() {
-		return 2;
-	}
-
-	@Override
-	public Fragment createFragment(int position) {
-		switch (position) {
-		case 0:
-			return new SpeedFragment();
-		case 1:
-			return new UsageFragment();
-		}
-		return null;
-	}
-
+    override fun createFragment(position: Int): Fragment {
+        when (position) {
+            0 -> return SpeedFragment()
+            1 -> return UsageFragment()
+        }
+        return Fragment()
+    }
 }

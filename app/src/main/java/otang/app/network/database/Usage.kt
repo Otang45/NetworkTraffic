@@ -1,10 +1,8 @@
-package otang.network.database;
+package otang.app.network.database
 
-public class Usage {
-
-	public String day;
-	public long mobile;
-	public long wifi;
-	public long total;
-
+class Usage {
+    var day: String = ""
+    var mobile: Long = 0
+    var wifi: Long = 0
+    var total: Long = 0
 }

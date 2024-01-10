@@ -1,12 +1,11 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/menu_mobile"
-        android:title="Mobile" />
+        android:title="@string/mobile" />
 
     <item
         android:id="@+id/menu_wifi"
-        android:title="Wifi" />
+        android:title="@string/wifi" />
 
 </menu>

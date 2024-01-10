@@ -1,58 +1,48 @@
-package otang.network.adapter;
+package otang.app.network.adapter
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import java.util.ArrayList;
-import otang.network.R;
-import otang.network.adapter.UsageAdapter.UsageHolder;
-import androidx.recyclerview.widget.RecyclerView;
-import otang.network.database.Usage;
-import otang.network.databinding.UsageItemBinding;
-import otang.network.util.TrafficUtils;
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import otang.app.network.database.Usage
+import otang.app.network.databinding.UsageItemBinding
+import otang.app.network.util.ColourUtils
+import otang.app.network.util.TrafficUtils
 
-public class UsageAdapter extends RecyclerView.Adapter<UsageAdapter.UsageHolder> {
+class UsageAdapter(private val context: Context, usageList: ArrayList<Usage>) :
+    RecyclerView.Adapter<UsageAdapter.UsageHolder>() {
+    class UsageHolder(binding: UsageItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val binding: UsageItemBinding
 
-	public static class UsageHolder extends RecyclerView.ViewHolder {
+        init {
+            this.binding = binding
+        }
+    }
 
-		private UsageItemBinding binding;
+    private val usageList: ArrayList<Usage>
 
-		public UsageHolder(UsageItemBinding binding) {
-			super(binding.getRoot());
-			this.binding = binding;
-		}
-	}
+    init {
+        this.usageList = usageList
+    }
 
-	private Context context;
-	private ArrayList<Usage> usageList;
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsageHolder {
+        return UsageHolder(UsageItemBinding.inflate(LayoutInflater.from(context), parent, false))
+    }
 
-	public UsageAdapter(Context context, ArrayList<Usage> usageList) {
-		this.context = context;
-		this.usageList = usageList;
-	}
+    override fun onBindViewHolder(holder: UsageHolder, position: Int) {
+        val usage: Usage = usageList[position]
+        holder.binding.tvDate.text = usage.day
+        holder.binding.tvMobile.text = TrafficUtils.getMetricData(usage.mobile)
+        holder.binding.tvWifi.text = TrafficUtils.getMetricData(usage.wifi)
+        holder.binding.tvTotal.text = TrafficUtils.getMetricData(usage.total)
+        if (position % 2 == 0) {
+            holder.binding.root.setCardBackgroundColor(ColourUtils.getOnSurfaceInverse(context))
+        } else {
+            holder.binding.root.setCardBackgroundColor(ColourUtils.getSurface(context))
+        }
+    }
 
-	@Override
-	public UsageHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		return new UsageHolder(UsageItemBinding.inflate(LayoutInflater.from(context), parent, false));
-	}
-
-	@Override
-	public void onBindViewHolder(UsageHolder holder, int position) {
-		Usage usage = usageList.get(position);
-		holder.binding.tvDate.setText(usage.day);
-		holder.binding.tvMobile.setText(TrafficUtils.getMetricData(usage.mobile));
-		holder.binding.tvWifi.setText(TrafficUtils.getMetricData(usage.wifi));
-		holder.binding.tvTotal.setText(TrafficUtils.getMetricData(usage.total));
-		if (position % 2 == 0) {
-			holder.binding.getRoot().setCardBackgroundColor(context.getColor(R.color.colorOnSurfaceInverse));
-		} else {
-			holder.binding.getRoot().setCardBackgroundColor(context.getColor(R.color.colorSurface));
-		}
-	}
-
-	@Override
-	public int getItemCount() {
-		return usageList.size();
-	}
-
+    override fun getItemCount(): Int {
+        return usageList.size
+    }
 }

@@ -1,88 +1,84 @@
-package otang.network.model;
+package otang.app.network.model
 
-import android.content.Context;
-import java.util.Locale;
-import otang.network.R;
+import android.content.Context
+import otang.app.network.R
+import java.util.Locale
 
-public final class Speed {
+class Speed(private val mContext: Context) {
+    private var mIsSpeedUnitBits = false
+    private var mTotalSpeed: Long = 0
+    private var mDownSpeed: Long = 0
+    private var mUpSpeed: Long = 0
+    private var total = HumanSpeed()
+    private var down = HumanSpeed()
+    private var up = HumanSpeed()
 
-	private boolean mIsSpeedUnitBits = false;
-	private Context mContext;
-	private long mTotalSpeed = 0;
-	private long mDownSpeed = 0;
-	private long mUpSpeed = 0;
-	HumanSpeed total = new HumanSpeed();
-	HumanSpeed down = new HumanSpeed();
-	HumanSpeed up = new HumanSpeed();
+    init {
+        updateHumanSpeeds()
+    }
 
-	public Speed(Context context) {
-		mContext = context;
-		updateHumanSpeeds();
-	}
+    private fun updateHumanSpeeds() {
+        total.setSpeed(mTotalSpeed)
+        down.setSpeed(mDownSpeed)
+        up.setSpeed(mUpSpeed)
+    }
 
-	private void updateHumanSpeeds() {
-		total.setSpeed(mTotalSpeed);
-		down.setSpeed(mDownSpeed);
-		up.setSpeed(mUpSpeed);
-	}
+    fun calcSpeed(timeTaken: Long, downBytes: Long, upBytes: Long) {
+        var totalSpeed: Long = 0
+        var downSpeed: Long = 0
+        var upSpeed: Long = 0
+        val totalBytes = downBytes + upBytes
+        if (timeTaken > 0) {
+            totalSpeed = totalBytes * 1000 / timeTaken
+            downSpeed = downBytes * 1000 / timeTaken
+            upSpeed = upBytes * 1000 / timeTaken
+        }
+        mTotalSpeed = totalSpeed
+        mDownSpeed = downSpeed
+        mUpSpeed = upSpeed
+        updateHumanSpeeds()
+    }
 
-	public void calcSpeed(long timeTaken, long downBytes, long upBytes) {
-		long totalSpeed = 0;
-		long downSpeed = 0;
-		long upSpeed = 0;
-		long totalBytes = downBytes + upBytes;
-		if (timeTaken > 0) {
-			totalSpeed = totalBytes * 1000 / timeTaken;
-			downSpeed = downBytes * 1000 / timeTaken;
-			upSpeed = upBytes * 1000 / timeTaken;
-		}
-		mTotalSpeed = totalSpeed;
-		mDownSpeed = downSpeed;
-		mUpSpeed = upSpeed;
-		updateHumanSpeeds();
-	}
+    fun getHumanSpeed(name: String?): HumanSpeed {
+        return when (name) {
+            "up" -> up
+            "down" -> down
+            else -> total
+        }
+    }
 
-	public HumanSpeed getHumanSpeed(String name) {
-		switch (name) {
-		case "up":
-			return up;
-		case "down":
-			return down;
-		default:
-			return total;
-		}
-	}
+    fun setIsSpeedUnitBits(isSpeedUnitBits: Boolean) {
+        mIsSpeedUnitBits = isSpeedUnitBits
+    }
 
-	public void setIsSpeedUnitBits(boolean isSpeedUnitBits) {
-		mIsSpeedUnitBits = isSpeedUnitBits;
-	}
+    inner class HumanSpeed {
+        var speedValue: String? = null
+        var speedUnit: String? = null
 
-	public class HumanSpeed {
-		public String speedValue;
-		public String speedUnit;
-
-		private void setSpeed(long speed) {
-			if (mContext == null)
-				return;
-			if (mIsSpeedUnitBits) {
-				speed *= 8;
-			}
-			if (speed < 1000000) {
-				this.speedUnit = mContext.getString(mIsSpeedUnitBits ? R.string.kbps : R.string.kBps);
-				this.speedValue = String.valueOf(speed / 1000);
-			} else if (speed >= 1000000) {
-				this.speedUnit = mContext.getString(mIsSpeedUnitBits ? R.string.Mbps : R.string.MBps);
-				if (speed < 10000000) {
-					this.speedValue = String.format(Locale.ENGLISH, "%.1f", speed / 1000000.0);
-				} else if (speed < 100000000) {
-					this.speedValue = String.valueOf(speed / 1000000);
-				} else {
-					this.speedValue = mContext.getString(R.string.plus99);
-				}
-			} else {
-				this.speedValue = mContext.getString(R.string.dash);
-				this.speedUnit = mContext.getString(R.string.dash);
-			}
-		}
-	}
+        @Suppress("NAME_SHADOWING", "KotlinConstantConditions")
+        fun setSpeed(speed: Long) {
+            var speed = speed
+            if (mIsSpeedUnitBits) {
+                speed *= 8
+            }
+            if (speed < 1000000) {
+                speedUnit =
+                    mContext.getString(if (mIsSpeedUnitBits) R.string.kbps else R.string.kBps)
+                speedValue = (speed / 1000).toString()
+            } else if (speed >= 1000000) {
+                speedUnit =
+                    mContext.getString(if (mIsSpeedUnitBits) R.string.Mbps else R.string.MBps)
+                speedValue = if (speed < 10000000) {
+                    String.format(Locale.ENGLISH, "%.1f", speed / 1000000.0)
+                } else if (speed < 100000000) {
+                    (speed / 1000000).toString()
+                } else {
+                    mContext.getString(R.string.plus99)
+                }
+            } else {
+                speedValue = mContext.getString(R.string.dash)
+                speedUnit = mContext.getString(R.string.dash)
+            }
+        }
+    }
 }
